@@ -10,7 +10,15 @@ async function run(): Promise<void> {
     core.info(`cache key: ${cache_key}`)
     core.info(`directory to cache: ${cache_dir}`)
 
-    const matched_key = await cache.restoreCache([cache_dir], cache_key, [])
+    /*
+     * github action cache cannot be overridden, so when storing the cache
+     * we will append a random value. When restoring we just restore by pattern.
+     */
+    const matched_key = await cache.restoreCache(
+      [cache_dir],
+      `${cache_key}-(dummy string)`,
+      [cache_key]
+    )
     if (!matched_key) {
       core.info('Cache not found')
       return
