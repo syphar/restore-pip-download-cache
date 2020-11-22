@@ -23,6 +23,7 @@ jobs:
           npm run all
   test:
     strategy:
+      max-parallel: 1
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
