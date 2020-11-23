@@ -1,4 +1,3 @@
----
 name: 'restore pip download cache'
 description: '1-liner to restore the pip download cache'
 author: 'syphar'
@@ -6,6 +5,16 @@ runs:
   using: 'node12'
   main: 'dist/restore/index.js'
   post: 'dist/save/index.js'
+
+inputs:
+  requirement_files:
+    required: false
+    description: 'requirements-files to use for building the cache key'
+    default: "
+        **/requirements_*.txt
+        **/requirements/*.txt
+        **/Pipfile.lock
+        **/poetry.lock"
 
 outputs:
   cache-hit:

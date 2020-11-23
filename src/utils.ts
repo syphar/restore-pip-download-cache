@@ -1,6 +1,9 @@
 import * as core from '@actions/core'
 
 export function cache_key(): string {
+  //TODO: use requirements-files hash. try to find
+  //(pypoetry.lock, Pipfile.lock, requirements*.txt, requirements/*.txt),
+  //merge hash
   return `${process.env['RUNNER_OS']}-pip-download-cache-v1`
 }
 

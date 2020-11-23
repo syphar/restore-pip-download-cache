@@ -14,13 +14,14 @@ GitHub Action caches improve build times and reduce network dependencies. Howeve
 python I find myself repeating some patterns. On of them is restoring the pip download cache, which is
 why this action was created.
 
-On top, writing the correct cache logic is [tricky](https://github.com/actions/cache/blob/0781355a23dac32fd3bac414512f4b903437991a/examples.md#python---pip). You need to understand how the [cache action](https://github.com/actions/cache) (keys and restore keys) work. Did you know the default cache will not save the cache if restoring had an exact match? Also, the default cache action will not store the updated cache
+On top, writing the correct cache logic is [tricky](https://github.com/actions/cache/blob/0781355a23dac32fd3bac414512f4b903437991a/examples.md#python---pip). You need to understand how the [cache action](https://github.com/actions/cache) (keys and restore keys) work. Did you know the default cache will not save the cache if restoring had an exact match? Or that the current cache is insert-only and never updates a cache key?  Also, the default cache action will not store the updated cache
 when there was a test-failure.
 
 `restore-pip-download-cache` is a simple 1-liner that covers all use-cases, correctly:
 - Caches the pip download cache directory
 - Works on Ubuntu, MacOS and Windows
 - Restore keys take the OS into account
+- will use any typical requirements file to build the cache key (poetry, pipenv, pip-requirements-txt)
 - cache will also be updated when the build failed, assuming the download cache never breaks.
 - Builds on the [native cache functionality of GitHub Actions](https://github.com/actions/toolkit/tree/master/packages/cache), same as [v2 of the generic cache action](https://github.com/actions/cache/issues/55#issuecomment-629433225)
 
@@ -52,26 +53,6 @@ jobs:
     - name: Test
       run: py.test
 ```
-
-## Current limitations
-This action is focused more on simplicity, not on performance.
-
-If you take the [simple example for caching pip downloads](https://github.com/actions/cache/blob/0781355a23dac32fd3bac414512f4b903437991a/examples.md#simple-example):
-```yaml
-- uses: actions/cache@v2
-  with:
-    path: ~/.cache/pip
-    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-    restore-keys: |
-      ${{ runner.os }}-pip-
-```
-
-the _save cache_ step will be skipped when requirements didn't change, assuming the download cache didn't change too.
-
-This action will always save the cache to keep the action simple.
-
-(this might be improved in the future)
-
 
 ## License
 
