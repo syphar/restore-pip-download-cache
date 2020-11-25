@@ -86,6 +86,9 @@ jobs:
           expected: false
           actual: ${{ steps.cache.outputs.cache-hit }}
 
+      - name: create testfile to be cached
+        run: touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
+
   use_existing_cache:
     name: use existing cache
     needs: populate_new_cache
@@ -121,5 +124,4 @@ jobs:
       - uses: actions/checkout@v2
       - name: create dummy requirements file
         run: echo "tests" > requirements.txt
-      - run: ls -ahl ${{ github.workspace }}
       - uses: ./

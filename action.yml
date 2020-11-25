@@ -25,3 +25,5 @@ inputs:
 outputs:
   cache-hit:
     description: "A boolean value to indicate if a cache was restored"
+  pip-cache-directory:
+    description: "the path to the pip cache directory"
