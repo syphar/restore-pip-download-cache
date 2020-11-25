@@ -15,12 +15,12 @@ inputs:
   requirement_files:
     required: false
     description: "requirements-files to use for building the cache key"
-    default: "
+    default: |
         requirements*.txt
         **/requirements*.txt
         **/requirements/*.txt
         **/Pipfile.lock
-        **/poetry.lock"
+        **/poetry.lock
 
 outputs:
   cache-hit:
