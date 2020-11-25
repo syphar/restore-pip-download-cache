@@ -79,7 +79,7 @@ jobs:
         id: cache
         with:
           requirement_files: "__tests__/dummy*.txt"
-          custom_cache_key: ${{ github.job_id }}
+          custom_cache_key: ${{ github.run_id }}
 
       - uses: nick-invision/assert-action@v1
         with:
@@ -101,9 +101,24 @@ jobs:
         id: cache
         with:
           requirement_files: "__tests__/dummy*.txt"
-          custom_cache_key: ${{ github.job_id }}
+          custom_cache_key: ${{ github.run_id }}
 
       - uses: nick-invision/assert-action@v1
         with:
           expected: true
           actual: ${{ steps.cache.outputs.cache-hit }}
+
+  runs_without_custom_key:
+    name: runs without arguments
+    needs: test_build
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: create dummy requirements file
+        run: echo "tests" > requirements.txt
+      - uses: ./
