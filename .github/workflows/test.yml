@@ -86,13 +86,13 @@ jobs:
           expected: false
           actual: ${{ steps.cache.outputs.cache-hit }}
 
-      - name: create testfile to be cached
+      - name: create testfile to be cached (non-windows)
         if: ${{ matrix.os != 'Windows' }}
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
           touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
 
-      - name: create testfile to be cached
+      - name: create testfile to be cached (windows)
         if: ${{ matrix.os == 'Windows' }}
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
@@ -120,8 +120,13 @@ jobs:
           expected: true
           actual: ${{ steps.cache.outputs.cache-hit }}
 
-      - name: check if testfile exists
+      - name: check if testfile exists (non-windows)
+        if: ${{ matrix.os != 'Windows' }}
         run: cat ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
+
+      - name: check if testfile exists (windows)
+        if: ${{ matrix.os == 'Windows' }}
+        run: cat ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
 
   runs_without_custom_key:
     name: runs without arguments
