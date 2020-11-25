@@ -11,7 +11,16 @@ env:
   node_version: "12.x"
 
 jobs:
+  cancel-previous:
+    runs-on: ubuntu-latest
+    steps:
+    - name: cancel previous runs
+      uses: styfle/cancel-workflow-action@0.6.0
+      with:
+        access_token: ${{ github.token }}
+
   unittests:
+    needs: cancel-previous
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -35,6 +44,7 @@ jobs:
         run: npm run all
 
   test_build:
+    needs: cancel-previous
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
