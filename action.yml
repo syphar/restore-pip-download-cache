@@ -7,9 +7,14 @@ runs:
   post: 'dist/save/index.js'
 
 inputs:
+  custom_cache_key:
+    required: false
+    description: "custom element that will be used when constructing the cache key"
+    default: ""
+
   requirement_files:
     required: false
-    description: 'requirements-files to use for building the cache key'
+    description: "requirements-files to use for building the cache key"
     default: "
         **/requirements_*.txt
         **/requirements/*.txt
