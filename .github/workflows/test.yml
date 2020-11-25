@@ -80,7 +80,7 @@ jobs:
         with:
           requirement_files: "__tests__/dummy*.txt"
 
-      - uses: nick-invision@assert-action@v1
+      - uses: "nick-invision@assert-action@v1"
         with:
           expected: true
           actual: ${{ steps.cache.outputs.cache-hit }}
