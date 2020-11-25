@@ -1,9 +1,27 @@
 import * as utils from '../src/utils'
 
-test('get cache key', () => {
-  expect(utils.cache_key()).toBe(`${process.env.RUNNER_OS}-pip-download-cache-v1`)
+const test_requirement_files = '__tests__/dummy*.txt'
+const test_requirement_hash = '0d370d5547fa12da0111fbdfbf065f45'
+
+test('get cache key', async () => {
+  expect(await utils.cache_key(test_requirement_files)).toBe(
+    `${process.env.RUNNER_OS}-pip-download-cache-v1-${test_requirement_hash}`
+  )
 })
 
 test('get cache directory', () => {
   expect(utils.pip_cache_directory()).toContain('pip')
+})
+
+test('get hash for file glob', async () => {
+  var hash = await utils.hashFiles(test_requirement_files)
+
+  expect(hash).toBe(test_requirement_hash)
+})
+
+test('get hash fails without files', async () => {
+  const testpattern = '__tests__/not_existing_pattern*.txt'
+  expect(utils.hashFiles(testpattern)).rejects.toEqual(
+    Error(`could not find requirement-files with pattern ${testpattern}`)
+  )
 })

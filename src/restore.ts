@@ -4,30 +4,33 @@ import * as utils from './utils'
 
 async function run(): Promise<void> {
   try {
+    const requirement_files = core.getInput('requirement_files', {
+      required: true
+    })
+
     const cache_dir: string = utils.pip_cache_directory()
-    const cache_key: string = utils.cache_key()
+    core.saveState('PIP_CACHE_DIRECTORY', cache_dir)
+
+    const cache_key: string = await utils.cache_key(requirement_files)
+    core.saveState('PIP_CACHE_KEY', cache_key)
 
     core.info(`cache key: ${cache_key}`)
     core.info(`directory to cache: ${cache_dir}`)
 
-    /*
-     * github action cache cannot be overridden, so when storing the cache
-     * we will append a random value. When restoring we just restore by pattern.
-     */
-    const matched_key = await cache.restoreCache(
-      [cache_dir],
-      `${cache_key}-(dummy string)`,
-      [cache_key]
-    )
+    const matched_key = await cache.restoreCache([cache_dir], cache_key, [
+      utils.restore_key()
+    ])
     if (!matched_key) {
       core.info('Cache not found')
+      core.setOutput('cache-hit', false.toString())
       return
     }
 
     const isExactKeyMatch = matched_key === cache_key
+    core.saveState('PIP_CACHE_MATCHED_KEY', matched_key)
     core.setOutput('cache-hit', isExactKeyMatch.toString())
 
-    core.info(`Cache restored from key: ${cache_key}`)
+    core.info(`Cache restored from key: ${matched_key}`)
   } catch (error) {
     core.setFailed(error.message)
   }
