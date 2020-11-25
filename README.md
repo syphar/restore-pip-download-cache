@@ -1,14 +1,9 @@
-<p align="center">
-  <a href="https://github.com/syphar/restore-pip-download-cache"><img alt="restore-pip-download-cache status" src="https://github.com/syphar/restore-pip-download-cache/workflows/build-test/badge.svg"></a>
-</p>
-
-
 # restore-pip-download-cache
 
 #### 1-liner to restore the pip download cache
-
-
-[![CI](/../../workflows/build-test/badge.svg?branch=master)](/../../actions)
+<p align="center">
+  <a href="https://github.com/syphar/restore-pip-download-cache"><img alt="restore-pip-download-cache status" src="https://github.com/syphar/restore-pip-download-cache/workflows/build-test/badge.svg"></a>
+</p>
 
 GitHub Action caches improve build times and reduce network dependencies. However, when creating github actions for
 python I find myself repeating some patterns. On of them is restoring the pip download cache, which is
