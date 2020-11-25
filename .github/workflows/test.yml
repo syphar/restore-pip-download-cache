@@ -53,17 +53,12 @@ jobs:
         run: npm run package
 
       - name: Commit and push distified version
-        # run: |
-        #   git config --global user.name 'autoblack'
-        #   git config --global user.email 'cclauss@users.noreply.github.com'
-        #   git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-        #   git checkout $GITHUB_HEAD_REF
-        #   git commit -am "fixup: build and package code"
-        #   git push
-        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+        uses: EndBug/add-and-commit@v5
         with:
-          commit_message: 'Update distified version'
-          file_pattern: 'dist/**/*.js'
+          message: 'Update distified version'
+          add: "dist"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   actiontest:
     name: test action
