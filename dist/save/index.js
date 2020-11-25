@@ -96,6 +96,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.logWarning = exports.pip_cache_directory = exports.cache_key = void 0;
 const core = __importStar(__webpack_require__(2186));
 function cache_key() {
+    //TODO: use requirements-files hash. try to find
+    //(pypoetry.lock, Pipfile.lock, requirements*.txt, requirements/*.txt),
+    //merge hash
     return `${process.env['RUNNER_OS']}-pip-download-cache-v1`;
 }
 exports.cache_key = cache_key;

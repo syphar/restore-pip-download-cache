@@ -46,7 +46,11 @@ function run() {
             const cache_key = utils.cache_key();
             core.info(`cache key: ${cache_key}`);
             core.info(`directory to cache: ${cache_dir}`);
-            const matched_key = yield cache.restoreCache([cache_dir], cache_key, []);
+            /*
+             * github action cache cannot be overridden, so when storing the cache
+             * we will append a random value. When restoring we just restore by pattern.
+             */
+            const matched_key = yield cache.restoreCache([cache_dir], `${cache_key}-(dummy string)`, [cache_key]);
             if (!matched_key) {
                 core.info('Cache not found');
                 return;
@@ -93,6 +97,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.logWarning = exports.pip_cache_directory = exports.cache_key = void 0;
 const core = __importStar(__webpack_require__(2186));
 function cache_key() {
+    //TODO: use requirements-files hash. try to find
+    //(pypoetry.lock, Pipfile.lock, requirements*.txt, requirements/*.txt),
+    //merge hash
     return `${process.env['RUNNER_OS']}-pip-download-cache-v1`;
 }
 exports.cache_key = cache_key;
