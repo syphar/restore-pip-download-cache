@@ -6,7 +6,7 @@ import * as md5File from 'md5-file'
 import * as path from 'path'
 
 export function restore_key(): string {
-  return `${process.env['RUNNER_OS']}-pip-download-cache-v1`
+  return `${process.env['RUNNER_OS']}-pip-download-cache`
 }
 
 export async function cache_key(
@@ -56,7 +56,7 @@ export async function hashFiles(patterns: string): Promise<string> {
       continue
     }
 
-    core.info(`hashing file ${file}`)
+    core.debug(`hashing file ${file}`)
 
     const file_hash = md5File.sync(file)
 

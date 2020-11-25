@@ -10,7 +10,7 @@ inputs:
   custom_cache_key:
     required: false
     description: "custom element that will be used when constructing the cache key"
-    default: ""
+    default: "v1"
 
   requirement_files:
     required: false

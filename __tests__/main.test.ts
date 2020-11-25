@@ -8,7 +8,7 @@ const test_requirement_hash =
 
 test('get cache key', async () => {
   expect(await utils.cache_key(test_requirement_files, 'custom')).toBe(
-    `${process.env.RUNNER_OS}-pip-download-cache-v1-custom-${test_requirement_hash}`
+    `${process.env.RUNNER_OS}-pip-download-cache-custom-${test_requirement_hash}`
   )
 })
 

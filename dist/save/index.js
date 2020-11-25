@@ -124,7 +124,7 @@ const fs = __importStar(__webpack_require__(5747));
 const md5File = __importStar(__webpack_require__(1446));
 const path = __importStar(__webpack_require__(5622));
 function restore_key() {
-    return `${process.env['RUNNER_OS']}-pip-download-cache-v1`;
+    return `${process.env['RUNNER_OS']}-pip-download-cache`;
 }
 exports.restore_key = restore_key;
 function cache_key(requirement_files, custom_cache_key) {
@@ -172,7 +172,7 @@ function hashFiles(patterns) {
                     core.info(`Skip directory '${file}'.`);
                     continue;
                 }
-                core.info(`hashing file ${file}`);
+                core.debug(`hashing file ${file}`);
                 const file_hash = md5File.sync(file);
                 result.write(file_hash);
                 if (!hasMatch) {
