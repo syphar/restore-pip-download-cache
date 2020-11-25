@@ -6,7 +6,7 @@ import * as md5File from 'md5-file'
 import * as path from 'path'
 
 export function restore_key(custom_cache_key: string): string {
-  return `${process.env['RUNNER_OS']}-pip-download-cache`
+  return `${process.env['RUNNER_OS']}-pip-download-cache-${custom_cache_key}`
 }
 
 export async function cache_key(
@@ -16,7 +16,7 @@ export async function cache_key(
   const base = restore_key(custom_cache_key)
   const hash = await hashFiles(requirement_files)
 
-  return `${base}-${custom_cache_key}-${hash}`
+  return Promise.resolve(`${base}-${hash}`)
 }
 
 export function pip_cache_directory(): string {

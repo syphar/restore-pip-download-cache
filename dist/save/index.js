@@ -124,14 +124,14 @@ const fs = __importStar(__webpack_require__(5747));
 const md5File = __importStar(__webpack_require__(1446));
 const path = __importStar(__webpack_require__(5622));
 function restore_key(custom_cache_key) {
-    return `${process.env['RUNNER_OS']}-pip-download-cache`;
+    return `${process.env['RUNNER_OS']}-pip-download-cache-${custom_cache_key}`;
 }
 exports.restore_key = restore_key;
 function cache_key(requirement_files, custom_cache_key) {
     return __awaiter(this, void 0, void 0, function* () {
         const base = restore_key(custom_cache_key);
         const hash = yield hashFiles(requirement_files);
-        return `${base}-${custom_cache_key}-${hash}`;
+        return Promise.resolve(`${base}-${hash}`);
     });
 }
 exports.cache_key = cache_key;
