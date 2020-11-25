@@ -76,3 +76,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        with:
+          requirement_files: "__tests__/dummy*.txt"
