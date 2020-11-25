@@ -12,7 +12,10 @@ async function run(): Promise<void> {
     const cache_dir: string = utils.pip_cache_directory()
     core.saveState('PIP_CACHE_DIRECTORY', cache_dir)
 
-    const cache_key: string = await utils.cache_key(requirement_files)
+    const cache_key: string = await utils.cache_key(
+      requirement_files,
+      custom_cache_key
+    )
     core.saveState('PIP_CACHE_KEY', cache_key)
 
     core.info(`cache key: ${cache_key}`)

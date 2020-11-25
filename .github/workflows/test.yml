@@ -64,8 +64,8 @@ jobs:
             exit 1
           fi
 
-  actiontest:
-    name: test action
+  populate_new_cache:
+    name: populate new cache
     needs: test_build
 
     strategy:
@@ -79,6 +79,29 @@ jobs:
         id: cache
         with:
           requirement_files: "__tests__/dummy*.txt"
+          custom_cache_key: ${{ github.job_id }}
+
+      - uses: nick-invision/assert-action@v1
+        with:
+          expected: false
+          actual: ${{ steps.cache.outputs.cache-hit }}
+
+  use_existing_cache:
+    name: use existing cache
+    needs: populate_new_cache
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        id: cache
+        with:
+          requirement_files: "__tests__/dummy*.txt"
+          custom_cache_key: ${{ github.job_id }}
 
       - uses: nick-invision/assert-action@v1
         with:
