@@ -87,13 +87,13 @@ jobs:
           actual: ${{ steps.cache.outputs.cache-hit }}
 
       - name: create testfile to be cached
-        if: ${{ matrix.os }} != 'Windows'
+        if: ${{ matrix.os != 'Windows' }}
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
           touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
 
       - name: create testfile to be cached
-        if: ${{ matrix.os }} -= 'Windows'
+        if: ${{ matrix.os == 'Windows' }}
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
           touch ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
