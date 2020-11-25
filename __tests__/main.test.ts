@@ -1,7 +1,10 @@
 import * as utils from '../src/utils'
 
 const test_requirement_files = '__tests__/dummy*.txt'
-const test_requirement_hash = '0d370d5547fa12da0111fbdfbf065f45'
+const test_requirement_hash =
+  process.platform === 'win32'
+    ? 'b9e86779eb99022d81a88623a4c52a25'
+    : '0d370d5547fa12da0111fbdfbf065f45'
 
 test('get cache key', async () => {
   expect(await utils.cache_key(test_requirement_files)).toBe(
