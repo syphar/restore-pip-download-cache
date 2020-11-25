@@ -7,7 +7,7 @@ runs:
   post: 'dist/save/index.js'
 
 inputs:
-  custom_cache_key:
+  custom_cache_key_element:
     required: false
     description: "custom element that will be used when constructing the cache key"
     default: "v1"
