@@ -45,7 +45,9 @@ function run() {
             const requirement_files = core.getInput('requirement_files', {
                 required: true
             });
-            const custom_cache_key = core.getInput('custom_cache_key', { required: true });
+            const custom_cache_key = core.getInput('custom_cache_key_element', {
+                required: true
+            });
             const cache_dir = utils.pip_cache_directory();
             core.saveState('PIP_CACHE_DIRECTORY', cache_dir);
             core.setOutput('pip-cache-directory', cache_dir);
