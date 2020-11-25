@@ -90,13 +90,13 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
-          touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
+          echo "test" > ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
 
       - name: create testfile to be cached (windows)
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
-          touch ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
+          echo "test" > ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
 
   use_existing_cache:
     name: use existing cache
