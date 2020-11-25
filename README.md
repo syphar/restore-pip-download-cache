@@ -14,7 +14,7 @@ GitHub Action caches improve build times and reduce network dependencies. Howeve
 python I find myself repeating some patterns. On of them is restoring the pip download cache, which is
 why this action was created.
 
-On top, writing the correct cache logic is [tricky](https://github.com/actions/cache/blob/0781355a23dac32fd3bac414512f4b903437991a/examples.md#python---pip). You need to understand how the [cache action](https://github.com/actions/cache) (keys and restore keys) work. Did you know the default cache will not save the cache if restoring had an exact match? Or that the current cache is insert-only and never updates a cache key?  Also, the default cache action will not store the updated cache
+On top, writing the correct cache logic is [tricky](https://github.com/actions/cache/blob/0781355a23dac32fd3bac414512f4b903437991a/examples.md#python---pip). You need to understand how the [cache action](https://github.com/actions/cache) (keys and restore keys) work. Did you know the default cache will not save the cache if restoring had an exact match? Or that the current cache on github side is insert-only and never updates a cache key?  Also, the default cache action will not store the updated cache
 when there was a test-failure.
 
 `restore-pip-download-cache` is a simple 1-liner that covers all use-cases, correctly:
@@ -50,9 +50,32 @@ jobs:
 
     - name: Install dependencies
       run: pip install -r requirements.txt
+
     - name: Test
       run: py.test
 ```
+
+## inputs
+
+### `requirement_files`
+
+When the default does not suffice you can provide a [glob pattern](https://github.com/actions/toolkit/tree/1cc56db0ff126f4d65aeb83798852e02a2c180c3/packages/glob) for the files that, when changed, likely change the pip download cache.
+
+Most of the time that is the requirements-files.
+
+Default for this input is:
+```
+requirements*.txt
+**/requirements*.txt
+**/requirements/*.txt
+**/Pipfile.lock
+**/poetry.lock
+```
+
+### `custom_cache_key_element`
+For testing and cache-busting you can provide a string that will included in the generated cache-key.
+
+Default is: `v1`
 
 ## License
 
