@@ -87,7 +87,9 @@ jobs:
           actual: ${{ steps.cache.outputs.cache-hit }}
 
       - name: create testfile to be cached
-        run: touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
+        run: |
+          mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
+          touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
 
   use_existing_cache:
     name: use existing cache
