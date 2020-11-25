@@ -87,13 +87,13 @@ jobs:
           actual: ${{ steps.cache.outputs.cache-hit }}
 
       - name: create testfile to be cached (non-windows)
-        if: ${{ matrix.os != 'Windows' }}
+        if: matrix.os != 'windows-latest'
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
           touch ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
 
       - name: create testfile to be cached (windows)
-        if: ${{ matrix.os == 'Windows' }}
+        if: matrix.os == 'windows-latest'
         run: |
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
           touch ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
@@ -121,11 +121,11 @@ jobs:
           actual: ${{ steps.cache.outputs.cache-hit }}
 
       - name: check if testfile exists (non-windows)
-        if: ${{ matrix.os != 'Windows' }}
+        if: matrix.os != 'windows-latest'
         run: cat ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
 
       - name: check if testfile exists (windows)
-        if: ${{ matrix.os == 'Windows' }}
+        if: matrix.os == 'windows-latest'
         run: cat ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
 
   runs_without_custom_key:
