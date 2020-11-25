@@ -14,10 +14,10 @@ jobs:
   cancel-previous:
     runs-on: ubuntu-latest
     steps:
-    - name: cancel previous runs
-      uses: styfle/cancel-workflow-action@0.6.0
-      with:
-        access_token: ${{ github.token }}
+      - name: cancel previous runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
 
   unittests:
     needs: cancel-previous
@@ -41,7 +41,12 @@ jobs:
         run: npm ci
 
       - name: run tests
-        run: npm run all
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 999
+          max_attempts: 3
+          retry_on: error
+          command: npm run all
 
   test_build:
     needs: cancel-previous
