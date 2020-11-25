@@ -7,8 +7,11 @@ on:
       - main
       - 'releases/*'
 
+env:
+  node_version: "12.x"
+
 jobs:
-  build:
+  unittests:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -16,12 +19,49 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+
       - uses: c-hive/gha-npm-cache@v1
-      - run: |
-          npm install
-      - run: |
-          npm run all
-  test:
+
+      - run: npm install
+
+      - run: npm run all
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+
+      - uses: c-hive/gha-npm-cache@v1
+
+      - name: Install JS dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Package
+        run: npm run package
+
+      - name: Commit and push distified version to master
+        uses: stefanzweifel/git-auto-commit-action@v4.1.1
+        with:
+          commit_message: 'Update distified version'
+          file_pattern: 'dist/**/*.js'
+
+  actiontest:
+    name: test action
+    needs: build
+
     strategy:
       max-parallel: 1
       matrix:
