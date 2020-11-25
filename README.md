@@ -60,7 +60,6 @@ Most of the time that is the requirements-files.
 
 Default for this input is:
 ```
-requirements*.txt
 **/requirements*.txt
 **/requirements/*.txt
 **/Pipfile.lock

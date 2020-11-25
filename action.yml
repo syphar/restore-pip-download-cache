@@ -16,7 +16,6 @@ inputs:
     required: false
     description: "requirements-files to use for building the cache key"
     default: |
-        requirements*.txt
         **/requirements*.txt
         **/requirements/*.txt
         **/Pipfile.lock
