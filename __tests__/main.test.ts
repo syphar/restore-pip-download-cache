@@ -22,6 +22,12 @@ test('get hash for file glob', async () => {
   expect(hash).toBe(test_requirement_hash)
 })
 
+test('get hash for multiple globs', async () => {
+  var hash = await utils.hashFiles('**/dummy_file2.txt\n**/dummy_file.txt')
+
+  expect(hash).toBe(test_requirement_hash)
+})
+
 test('get hash fails without files', async () => {
   const testpattern = '__tests__/not_existing_pattern*.txt'
   expect(utils.hashFiles(testpattern)).rejects.toEqual(

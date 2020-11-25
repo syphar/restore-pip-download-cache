@@ -120,6 +120,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: create dummy requirements file
-        run: echo "tests" > ${{ github.workspace }}/requirements.txt
+        run: echo "tests" > requirements.txt
       - run: ls -ahl ${{ github.workspace }}
       - uses: ./
