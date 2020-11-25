@@ -42,22 +42,27 @@ const utils = __importStar(__webpack_require__(918));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const requirement_files = core.getInput('requirement_files', {
+                required: true
+            });
             const cache_dir = utils.pip_cache_directory();
-            const cache_key = utils.cache_key();
+            core.saveState('PIP_CACHE_DIRECTORY', cache_dir);
+            const cache_key = yield utils.cache_key(requirement_files);
+            core.saveState('PIP_CACHE_KEY', cache_key);
             core.info(`cache key: ${cache_key}`);
             core.info(`directory to cache: ${cache_dir}`);
-            /*
-             * github action cache cannot be overridden, so when storing the cache
-             * we will append a random value. When restoring we just restore by pattern.
-             */
-            const matched_key = yield cache.restoreCache([cache_dir], `${cache_key}-(dummy string)`, [cache_key]);
+            const matched_key = yield cache.restoreCache([cache_dir], cache_key, [
+                utils.restore_key()
+            ]);
             if (!matched_key) {
                 core.info('Cache not found');
+                core.setOutput('cache-hit', false.toString());
                 return;
             }
             const isExactKeyMatch = matched_key === cache_key;
+            core.saveState('PIP_CACHE_MATCHED_KEY', matched_key);
             core.setOutput('cache-hit', isExactKeyMatch.toString());
-            core.info(`Cache restored from key: ${cache_key}`);
+            core.info(`Cache restored from key: ${matched_key}`);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -93,14 +98,40 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.logWarning = exports.pip_cache_directory = exports.cache_key = void 0;
+exports.hashFiles = exports.logWarning = exports.pip_cache_directory = exports.cache_key = exports.restore_key = void 0;
 const core = __importStar(__webpack_require__(2186));
-function cache_key() {
-    //TODO: use requirements-files hash. try to find
-    //(pypoetry.lock, Pipfile.lock, requirements*.txt, requirements/*.txt),
-    //merge hash
-    return `${process.env['RUNNER_OS']}-pip-download-cache-v1`;
+const glob = __importStar(__webpack_require__(8090));
+const crypto = __importStar(__webpack_require__(6417));
+const fs = __importStar(__webpack_require__(5747));
+const md5File = __importStar(__webpack_require__(1446));
+const path = __importStar(__webpack_require__(5622));
+function restore_key() {
+    return `${process.env['RUNNER_OS']}-pip-download-cache-v1-`;
+}
+exports.restore_key = restore_key;
+function cache_key(requirement_files) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const base = restore_key();
+        const hash = yield hashFiles(requirement_files);
+        return `${base}${hash}`;
+    });
 }
 exports.cache_key = cache_key;
 function pip_cache_directory() {
@@ -122,6 +153,47 @@ function logWarning(message) {
     core.info(`${warningPrefix}${message}`);
 }
 exports.logWarning = logWarning;
+function hashFiles(patterns) {
+    var e_1, _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = crypto.createHash('md5');
+        const githubWorkspace = process.cwd();
+        const globber = yield glob.create(patterns, { followSymbolicLinks: true });
+        let hasMatch = false;
+        try {
+            for (var _b = __asyncValues(globber.globGenerator()), _c; _c = yield _b.next(), !_c.done;) {
+                const file = _c.value;
+                if (!file.startsWith(`${githubWorkspace}${path.sep}`)) {
+                    core.info(`Ignore '${file}' since it is not under GITHUB_WORKSPACE.`);
+                    continue;
+                }
+                if (fs.statSync(file).isDirectory()) {
+                    core.info(`Skip directory '${file}'.`);
+                    continue;
+                }
+                core.info(`hashing file ${file}`);
+                const file_hash = md5File.sync(file);
+                result.write(file_hash);
+                if (!hasMatch) {
+                    hasMatch = true;
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) yield _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if (!hasMatch) {
+            return Promise.reject(new Error(`could not find requirement-files with pattern ${patterns}`));
+        }
+        result.end();
+        return Promise.resolve(result.digest('hex'));
+    });
+}
+exports.hashFiles = hashFiles;
 
 
 /***/ }),
@@ -43144,6 +43216,56 @@ DelayedStream.prototype._checkIfMaxDataSizeExceeded = function() {
     'DelayedStream#maxDataSize of ' + this.maxDataSize + ' bytes exceeded.'
   this.emit('error', new Error(message));
 };
+
+
+/***/ }),
+
+/***/ 1446:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const crypto = __webpack_require__(6417)
+const fs = __webpack_require__(5747)
+
+const BUFFER_SIZE = 8192
+
+function md5FileSync (path) {
+  const fd = fs.openSync(path, 'r')
+  const hash = crypto.createHash('md5')
+  const buffer = Buffer.alloc(BUFFER_SIZE)
+
+  try {
+    let bytesRead
+
+    do {
+      bytesRead = fs.readSync(fd, buffer, 0, BUFFER_SIZE)
+      hash.update(buffer.slice(0, bytesRead))
+    } while (bytesRead === BUFFER_SIZE)
+  } finally {
+    fs.closeSync(fd)
+  }
+
+  return hash.digest('hex')
+}
+
+function md5File (path) {
+  return new Promise((resolve, reject) => {
+    const output = crypto.createHash('md5')
+    const input = fs.createReadStream(path)
+
+    input.on('error', (err) => {
+      reject(err)
+    })
+
+    output.once('readable', () => {
+      resolve(output.read().toString('hex'))
+    })
+
+    input.pipe(output)
+  })
+}
+
+module.exports = md5File
+module.exports.sync = md5FileSync
 
 
 /***/ }),
