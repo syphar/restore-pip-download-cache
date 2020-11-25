@@ -48,12 +48,13 @@ function run() {
             const custom_cache_key = core.getInput('custom_cache_key', { required: true });
             const cache_dir = utils.pip_cache_directory();
             core.saveState('PIP_CACHE_DIRECTORY', cache_dir);
+            core.setOutput('pip-cache-directory', cache_dir);
             const cache_key = yield utils.cache_key(requirement_files, custom_cache_key);
             core.saveState('PIP_CACHE_KEY', cache_key);
             core.info(`cache key: ${cache_key}`);
             core.info(`directory to cache: ${cache_dir}`);
             const matched_key = yield cache.restoreCache([cache_dir], cache_key, [
-                utils.restore_key()
+                utils.restore_key(custom_cache_key)
             ]);
             if (!matched_key) {
                 core.info('Cache not found');
@@ -123,13 +124,13 @@ const crypto = __importStar(__webpack_require__(6417));
 const fs = __importStar(__webpack_require__(5747));
 const md5File = __importStar(__webpack_require__(1446));
 const path = __importStar(__webpack_require__(5622));
-function restore_key() {
+function restore_key(custom_cache_key) {
     return `${process.env['RUNNER_OS']}-pip-download-cache`;
 }
 exports.restore_key = restore_key;
 function cache_key(requirement_files, custom_cache_key) {
     return __awaiter(this, void 0, void 0, function* () {
-        const base = restore_key();
+        const base = restore_key(custom_cache_key);
         const hash = yield hashFiles(requirement_files);
         return `${base}-${custom_cache_key}-${hash}`;
     });

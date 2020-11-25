@@ -111,6 +111,9 @@ jobs:
           expected: true
           actual: ${{ steps.cache.outputs.cache-hit }}
 
+      - name: check if testfile exists
+        run: cat ${{ steps.cache.outputs.pip-cache-directory}}/${{ github.run_id }}.txt
+
   runs_without_custom_key:
     name: runs without arguments
     needs: test_build

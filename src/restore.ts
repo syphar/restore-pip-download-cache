@@ -11,6 +11,7 @@ async function run(): Promise<void> {
 
     const cache_dir: string = utils.pip_cache_directory()
     core.saveState('PIP_CACHE_DIRECTORY', cache_dir)
+    core.setOutput('pip-cache-directory', cache_dir)
 
     const cache_key: string = await utils.cache_key(
       requirement_files,
@@ -22,7 +23,7 @@ async function run(): Promise<void> {
     core.info(`directory to cache: ${cache_dir}`)
 
     const matched_key = await cache.restoreCache([cache_dir], cache_key, [
-      utils.restore_key()
+      utils.restore_key(custom_cache_key)
     ])
     if (!matched_key) {
       core.info('Cache not found')
