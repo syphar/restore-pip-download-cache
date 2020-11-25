@@ -65,7 +65,6 @@ jobs:
     needs: build
 
     strategy:
-      max-parallel: 1
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
