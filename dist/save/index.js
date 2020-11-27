@@ -131,7 +131,7 @@ function cache_key(requirement_files, custom_cache_key) {
     return __awaiter(this, void 0, void 0, function* () {
         const base = restore_key(custom_cache_key);
         const hash = yield hashFiles(requirement_files);
-        return Promise.resolve(`${base}-${hash}`);
+        return `${base}-${hash}`;
     });
 }
 exports.cache_key = cache_key;
@@ -173,7 +173,7 @@ function hashFiles(patterns) {
                     continue;
                 }
                 core.debug(`hashing file ${file}`);
-                const file_hash = md5File.sync(file);
+                const file_hash = yield md5File.default(file);
                 result.write(file_hash);
                 if (!hasMatch) {
                     hasMatch = true;
@@ -188,10 +188,10 @@ function hashFiles(patterns) {
             finally { if (e_1) throw e_1.error; }
         }
         if (!hasMatch) {
-            return Promise.reject(new Error(`could not find requirement-files with pattern ${patterns}`));
+            throw new Error(`could not find requirement-files with pattern ${patterns}`);
         }
         result.end();
-        return Promise.resolve(result.digest('hex'));
+        return result.digest('hex');
     });
 }
 exports.hashFiles = hashFiles;
