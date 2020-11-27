@@ -121,7 +121,7 @@ jobs:
         uses: nick-invision/assert-action@v1
         with:
           comparison: contains
-          expected: "Downloading python_dateutil"
+          expected: "Downloading"
           actual: ${{ steps.pipinstall.outputs.log }}
 
   use_existing_cache:
@@ -162,7 +162,7 @@ jobs:
         uses: nick-invision/assert-action@v1
         with:
           comparison: contains
-          expected: "Using cached python_dateutil"
+          expected: "Using cached"
           actual: ${{ steps.pipinstall.outputs.log }}
 
 
