@@ -159,16 +159,19 @@ jobs:
         run: cat ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
 
       - name: install package for the download cache
-        id: pipinstall
-        run: "echo ::set-output name=log::$(pip install python-dateutil)"
+        run: "pip install python-dateutil > pip_install.txt"
+
+      - uses: pCYSl5EDgo/cat@master
+        id: cat
+        with:
+          path: pip_install.txt
 
       - name: assert if package was downloaded
         uses: nick-invision/assert-action@v1
         with:
           comparison: contains
           expected: "Using cached"
-          actual: ${{ steps.pipinstall.outputs.log }}
-
+          actual: ${{ steps.cat.outputs.text }}
 
   runs_without_custom_key:
     name: runs without arguments
