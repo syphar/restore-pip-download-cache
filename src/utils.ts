@@ -16,7 +16,7 @@ export async function cache_key(
   const base = restore_key(custom_cache_key)
   const hash = await hashFiles(requirement_files)
 
-  return Promise.resolve(`${base}-${hash}`)
+  return `${base}-${hash}`
 }
 
 export function pip_cache_directory(): string {
@@ -58,7 +58,7 @@ export async function hashFiles(patterns: string): Promise<string> {
 
     core.debug(`hashing file ${file}`)
 
-    const file_hash = md5File.sync(file)
+    const file_hash = await md5File.default(file)
 
     result.write(file_hash)
     if (!hasMatch) {
@@ -67,11 +67,9 @@ export async function hashFiles(patterns: string): Promise<string> {
   }
 
   if (!hasMatch) {
-    return Promise.reject(
-      new Error(`could not find requirement-files with pattern ${patterns}`)
-    )
+    throw new Error(`could not find requirement-files with pattern ${patterns}`)
   }
 
   result.end()
-  return Promise.resolve(result.digest('hex'))
+  return result.digest('hex')
 }
