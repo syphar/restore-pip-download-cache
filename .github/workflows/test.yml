@@ -113,6 +113,17 @@ jobs:
           mkdir -p ${{ steps.cache.outputs.pip-cache-directory}}
           echo "test" > ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
 
+      - name: install package for the download cache
+        id: pipinstall
+        run: "echo ::set-output name=log::$(pip install python-dateutil)"
+
+      - name: assert if package was downloaded
+        uses: nick-invision/assert-action@v1
+        with:
+          comparison: contains
+          expected: "Downloading python_dateutil"
+          actual: ${{ steps.pipinstall.outputs.log }}
+
   use_existing_cache:
     name: use existing cache
     needs: populate_new_cache
@@ -142,6 +153,18 @@ jobs:
       - name: check if testfile exists (windows)
         if: matrix.os == 'windows-latest'
         run: cat ${{ steps.cache.outputs.pip-cache-directory}}\${{ github.run_id }}.txt
+
+      - name: install package for the download cache
+        id: pipinstall
+        run: "echo ::set-output name=log::$(pip install python-dateutil)"
+
+      - name: assert if package was downloaded
+        uses: nick-invision/assert-action@v1
+        with:
+          comparison: contains
+          expected: "Using cached python_dateutil"
+          actual: ${{ steps.pipinstall.outputs.log }}
+
 
   runs_without_custom_key:
     name: runs without arguments
