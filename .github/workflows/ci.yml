@@ -19,6 +19,33 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
+  lint:
+    needs: cancel-previous
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: restore npm cache
+        uses: c-hive/gha-npm-cache@v1
+
+      - name: installing dependencies
+        run: npm ci
+
+      - name: check format
+        run: npm run format-check
+
+      - name: run lint
+        run: npm run lint
+
+      - name: Cancel complete workflow if this job fails...
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.2
+
   unittests:
     needs: cancel-previous
     strategy:
@@ -46,9 +73,9 @@ jobs:
           timeout_minutes: 999
           max_attempts: 3
           retry_on: error
-          command: npm run all
+          command: npm test
 
-  test_build:
+  build:
     needs: cancel-previous
     runs-on: ubuntu-latest
     steps:
@@ -71,17 +98,17 @@ jobs:
       - name: Package
         run: npm run package
 
-      - name: fail if build wasn't commited
-        run: |
-          if [ ! -z "$(git status --porcelain)" ]; then
-            # If we get a fail here then this workflow needs attention...
-            >&2 echo "build/package did change files. Did you forget to run the build locally?"
-            exit 1
-          fi
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v5
+        with:
+          message: "update build"
+          add: "dist/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   populate_new_cache:
     name: populate new cache
-    needs: test_build
+    needs: build
 
     strategy:
       matrix:
@@ -177,7 +204,7 @@ jobs:
 
   runs_without_custom_key:
     name: runs without arguments
-    needs: test_build
+    needs: build
 
     strategy:
       matrix:
