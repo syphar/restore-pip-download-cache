@@ -24,7 +24,7 @@ jobs:
     needs: cancel-previous
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
 
       - name: Setup Node.js
         uses: actions/setup-node@v2.1.5
@@ -55,7 +55,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
 
       - name: Setup Node.js
         uses: actions/setup-node@v2.1.5
@@ -80,7 +80,7 @@ jobs:
     needs: cancel-previous
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
 
       - name: Setup Node.js
         uses: actions/setup-node@v2.1.5
@@ -117,7 +117,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: ./
         id: cache
         with:
@@ -167,7 +167,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: ./
         id: cache
         with:
@@ -213,7 +213,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: create dummy requirements file
         run: echo "tests" > requirements.txt
       - uses: ./
