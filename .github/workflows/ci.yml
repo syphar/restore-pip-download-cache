@@ -121,7 +121,9 @@ jobs:
       - uses: ./
         id: cache
         with:
-          requirement_files: "__tests__/dummy*.txt"
+          requirement_files: |
+            some_other_value
+            __tests__/dummy*.txt
           custom_cache_key_element: ${{ env.custom_cache_key_element }}
 
       - name: assert cache-hit = true
@@ -171,7 +173,9 @@ jobs:
       - uses: ./
         id: cache
         with:
-          requirement_files: "__tests__/dummy*.txt"
+          requirement_files: |
+            some_other_value
+            __tests__/dummy*.txt
           custom_cache_key_element: ${{ env.custom_cache_key_element }}
 
       - name: assert cache-hit = true
