@@ -1,5 +1,5 @@
-import * as core from '@actions/core'
 import * as cache from '@actions/cache'
+import * as core from '@actions/core'
 import * as utils from './utils'
 
 async function run(): Promise<void> {
@@ -28,7 +28,7 @@ async function run(): Promise<void> {
       utils.restore_key(custom_cache_key)
     ])
     if (!matched_key) {
-      core.info('Cache not found')
+      core.info('Cache not found') // eslint-disable-line i18n-text/no-en
       core.setOutput('cache-hit', false.toString())
       return
     }
@@ -37,7 +37,7 @@ async function run(): Promise<void> {
     core.saveState('PIP_CACHE_MATCHED_KEY', matched_key)
     core.setOutput('cache-hit', isExactKeyMatch.toString())
 
-    core.info(`Cache restored from key: ${matched_key}`)
+    core.info(`Cache restored from key: ${matched_key}`) // eslint-disable-line i18n-text/no-en
   } catch (error) {
     core.setFailed(error.message)
   }
