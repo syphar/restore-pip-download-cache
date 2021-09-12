@@ -16,17 +16,19 @@ async function run(): Promise<void> {
     try {
       await cache.saveCache([cache_path], cache_key)
     } catch (error) {
+      const error_ = error as Error
+
       // see https://github.com/actions/cache/blob/0781355a23dac32fd3bac414512f4b903437991a/src/save.ts#L43-L54
-      if (error.name === cache.ValidationError.name) {
+      if (error_.name === cache.ValidationError.name) {
         throw error
-      } else if (error.name === cache.ReserveCacheError.name) {
-        core.info(error.message)
+      } else if (error_.name === cache.ReserveCacheError.name) {
+        core.info(error_.message)
       } else {
-        utils.logWarning(error.message)
+        utils.logWarning(error_.message)
       }
     }
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed((error as Error).message)
   }
 }
 

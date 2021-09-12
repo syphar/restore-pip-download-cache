@@ -39,7 +39,7 @@ async function run(): Promise<void> {
 
     core.info(`Cache restored from key: ${matched_key}`) // eslint-disable-line i18n-text/no-en
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed((error as Error).message)
   }
 }
 
