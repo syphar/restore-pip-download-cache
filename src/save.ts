@@ -1,5 +1,5 @@
-import * as core from '@actions/core'
 import * as cache from '@actions/cache'
+import * as core from '@actions/core'
 import * as utils from './utils'
 
 async function run(): Promise<void> {
@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const cache_path = core.getState('PIP_CACHE_DIRECTORY')
 
     if (matched_key === cache_key) {
-      core.info('Cache hit occurred when restoring, not saving cache.')
+      core.info('Cache hit occurred when restoring, not saving cache.') // eslint-disable-line i18n-text/no-en
       return
     }
 
