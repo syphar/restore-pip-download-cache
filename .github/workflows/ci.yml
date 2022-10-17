@@ -8,7 +8,7 @@ on:
       - 'releases/*'
 
 env:
-  node_version: "12.x"
+  node_version: "16.x"
   custom_cache_key_element: "${{ github.sha }}-${{ github.run_id }}"
 
 jobs:
