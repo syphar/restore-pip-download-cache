@@ -123,7 +123,7 @@ jobs:
           custom_cache_key_element: ${{ env.custom_cache_key_element }}
 
       - name: assert cache-hit = true
-        uses: nick-invision/assert-action@v1.2.0
+        uses: nick-invision/assert-action@v1.3.0
         with:
           expected: false
           actual: ${{ steps.cache.outputs.cache-hit }}
@@ -149,7 +149,7 @@ jobs:
           path: pip_install.txt
 
       - name: assert if package was downloaded
-        uses: nick-invision/assert-action@v1.2.0
+        uses: nick-invision/assert-action@v1.3.0
         with:
           comparison: contains
           expected: "Downloading"
@@ -173,7 +173,7 @@ jobs:
           custom_cache_key_element: ${{ env.custom_cache_key_element }}
 
       - name: assert cache-hit = true
-        uses: nick-invision/assert-action@v1.2.0
+        uses: nick-invision/assert-action@v1.3.0
         with:
           expected: true
           actual: ${{ steps.cache.outputs.cache-hit }}
@@ -195,7 +195,7 @@ jobs:
           path: pip_install.txt
 
       - name: assert if package using the cached download
-        uses: nick-invision/assert-action@v1.2.0
+        uses: nick-invision/assert-action@v1.3.0
         with:
           comparison: contains
           expected: "Using cached"
