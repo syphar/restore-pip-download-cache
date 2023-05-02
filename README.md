@@ -1,6 +1,17 @@
 # restore-pip-download-cache
 
-#### 1-liner to restore the pip download cache
+**this package is not maintained any more.**
+
+It functionality was added to the standard `setup-python` action, see
+https://github.com/actions/setup-python#caching-packages-dependencies.
+
+If you want to take over maintenance of this action, just contact me directly.
+
+
+
+------------------
+
+## 1-liner to restore the pip download cache
 <p align="center">
   <a href="https://github.com/syphar/restore-pip-download-cache"><img alt="restore-pip-download-cache status" src="https://github.com/syphar/restore-pip-download-cache/workflows/build-test/badge.svg"></a>
 </p>
